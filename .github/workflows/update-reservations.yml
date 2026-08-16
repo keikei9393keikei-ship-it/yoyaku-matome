@@ -15,6 +15,7 @@ permissions:
 jobs:
   update-reservations:
     runs-on: ubuntu-latest
+    environment: gym-yoyaku
     timeout-minutes: 10
     steps:
       - name: Checkout
