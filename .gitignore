@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+artifacts/
+*.log
+.DS_Store
+credentials.json
+token.json
+client_secret*.json
