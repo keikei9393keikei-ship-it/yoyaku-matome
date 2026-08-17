@@ -1,39 +1,119 @@
 name: 予約情報の更新
 
+
+
 on:
+
+  schedule:
+  
+    # GitHub ActionsのcronはUTC。12:00 UTC = 21:00 JST。
+    
+    - cron: "0 12 * * *"
+    
   workflow_dispatch:
+  
     inputs:
+    
       dry_run:
+      
         description: "カレンダーへ書き込まず取得結果だけ確認する"
+        
         required: true
+        
         default: true
+        
         type: boolean
+        
+
 
 permissions:
+
   contents: read
+  
+
 
 jobs:
+
   update-reservations:
+  
     runs-on: ubuntu-latest
+    
     environment: gym-yoyaku
+    
     timeout-minutes: 10
+    
     steps:
+    
       - name: Checkout
+      
         uses: actions/checkout@v4
+        
+
 
       - name: Setup Python
+      
         uses: actions/setup-python@v5
+        
         with:
+        
           python-version: "3.12"
+          
+
 
       - name: Install dependencies
+      
         run: pip install -r requirements.txt && playwright install --with-deps chromium
+        
+
 
       - name: Sync reservations
+      
         env:
+        
           RESERVATION_USER_ID: ${{ secrets.RESERVATION_USER_ID }}
+          
           RESERVATION_PASSWORD: ${{ secrets.RESERVATION_PASSWORD }}
+          
           GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
+          
           GOOGLE_TOKEN_JSON: ${{ secrets.GOOGLE_TOKEN_JSON }}
-          DRY_RUN: ${{ inputs.dry_run }}
+          
+          # 定期実行は本番同期、手動実行では画面で選んだdry_runを使用する。
+          
+          DRY_RUN: ${{ github.event_name == 'schedule' && 'false' || inputs.dry_run }}
+          
         run: python -m src.reservation_sync
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
